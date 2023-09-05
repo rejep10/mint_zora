@@ -7,6 +7,8 @@ from mint_abi import MINT_ABI
 node_url = "https://rpc.zora.energy"
 proxy_url = "" # Введите ваш прокси в формате login:password@ip:port
 
+number_of_nft = 1 #кол-во нфт которое хотите заминтить
+
 # Чтение приватных ключей из файла
 private_keys = []
 with open("ayodude.txt", "r") as file:
@@ -32,11 +34,12 @@ for private_key in private_keys:
     # Получение адреса кошелька из приватного ключа
     account = Account.from_key(private_key)
     wallet_address = account.address
-    function_call = contract.functions.mintWithRewards(account.address, 1, "", "0x0000000000000000000000000000000000000000")
+    function_call = contract.functions.mintWithRewards(account.address, number_of_nft, "", "0x0000000000000000000000000000000000000000")
     function_cost = w3.to_wei("0.000777", "ether")
+    value = function_cost * number_of_nft
     # Вызов функции "минт"
     transaction = function_call.build_transaction({
-        "value": function_cost,
+        "value": value,
         "gas": 2000000,
         "gasPrice": w3.to_wei("0.005", "gwei"),
         "nonce": w3.eth.get_transaction_count(wallet_address),
